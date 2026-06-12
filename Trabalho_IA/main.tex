@@ -1,0 +1,97 @@
+\documentclass[12pt]{article}
+
+\usepackage{template-latex/sbc-template}
+\usepackage{graphicx,url}
+\usepackage[utf8]{inputenc}
+\usepackage[brazil]{babel}
+\usepackage{booktabs}
+
+\sloppy
+
+\title{Análise Preditiva do Desempenho Escolar utilizando\\ Algoritmos de Aprendizado de Máquina}
+
+\author{Arthur V. F. Brietzke, Gabriel R. Miranda, Jean Matheus,\\ Lucas M. B. Valim, Matheus Nogueira}
+
+\address{Bacharelado em Engenharia de Software\\
+  Toledo, PR -- Brasil
+}
+
+\begin{document} 
+
+\maketitle
+
+\begin{abstract}
+  This work synthesizes the application of machine learning algorithms to predict student performance based on academic and socioeconomic factors. Using the StudentPerformanceFactors dataset, preprocessing was performed via value imputation, standardization, and categorical encoding. Linear Regression and Random Forest models were evaluated. Results indicated the superiority of the Linear Regression model ($R^{2}= 0.746$), highlighting the strong linear relationship of school attendance and study hours with student performance. Model quality evaluation followed guidelines consistent with the ISO/IEC 25010 standard and established statistical metrics.
+\end{abstract}
+     
+\begin{resumo} 
+  Este trabalho sintetiza a aplicação de algoritmos de aprendizado de máquina para prever o desempenho de estudantes com base em fatores acadêmicos e socioeconômicos. Utilizando a base de dados StudentPerformance Factors, foi realizado o pré-processamento via imputação de valores, padronização e codificação de variáveis categóricas. Foram avaliados modelos de Regressão Linear e Random Forest. Os resultados indicaram a superioridade do modelo de Regressão Linear ($R^{2}=0.746$) destacando a forte relação linear da frequência escolar e das horas de estudo com o desempenho do aluno. A avaliação da qualidade dos modelos seguiu diretrizes aderentes à norma ISO/IEC 25010 e métricas estatísticas consolidadas.
+\end{resumo}
+
+\section{Introdução}
+
+O campo de Mineração de Dados Educacionais (\textit{Educational Data Mining}) tem crescido significativamente, permitindo a extração de padrões ocultos em ambientes acadêmicos para a tomada de decisões pedagógicas. O domínio escolhido para este estudo foca na previsão do desempenho de estudantes, uma tarefa essencial para a identificação precoce de alunos em risco e o direcionamento de recursos educacionais adequados.
+
+Neste contexto, o presente artigo descreve uma análise preditiva utilizando algoritmos de aprendizado de máquina (\textit{Machine Learning}) aplicados a um conjunto de dados composto por atributos socioeconômicos e comportamentais de alunos. Em alinhamento com as diretrizes da Engenharia de Software e a norma de qualidade de produto de software ISO/IEC 25010, buscou-se garantir que o modelo selecionado apresentasse características elevadas de adequação funcional e eficiência de desempenho, priorizando a precisão e a confiabilidade das estimativas da nota dos exames.
+
+\section{Base de Dados e Pré-processamento}
+
+A base de dados utilizada no estudo foi a \texttt{StudentPerformance Factors.csv}, composta 6.607 registros e 20 variáveis. As características (\textit{features}) incluem atributos numéricos horas de estudo (\textit{Hours\_Studied}), frequência (\textit{Attendance}) e notas em avaliações além de variáveis categóricas relevantes, como o nível de escolaridade e dos pais, acesso à internet e tipo de escola. A variável-alvo selecionada para foi a nota do exame final (\textit{Exam\_Score}).
+
+Para garantir a integridade dos dados, o primeiro passo da preparação identificou valores nulos nas colunas \texttt{Parental\_Education\_Level}, \texttt{Teacher\_Quality} e \texttt{Distance\_from\_Home}. Estes dados faltantes foram tratados por meio da imputação da moda estatística, preenchendo as lacunas com a categoria mais frequente de cada atributo.
+
+Em seguida, foi estruturado um \textit{Pipeline} automatizado de transformação empregando ferramentas da biblioteca \textit{Scikit-Learn}. As variáveis categóricas passaram pelo método de codificação \texttt{OneHotEncoder}, enquanto as variáveis numéricas foram redimensionadas e padronizadas utilizando o \texttt{StandardScaler}. Com o objetivo de validar adequadamente o desempenho do algoritmo perante dados nunca antes vistos, o conjunto total foi particionado utilizando a proporção de 80\% para o conjunto de treinamento (5.285 instâncias) e 20\% para validação e teste (1.322 instâncias).
+
+\section{Algoritmos Utilizados}
+
+Para esta análise, dois modelos preditivos clássicos foram implementados, treinados e avaliados: Regressão Linear Múltipla e \textit{Random Forest Regressor}. A estratégia metodológica visou confrontar o desempenho de uma abordagem puramente paramétrica e baseada em hipóteses de linearidade contra o de um algoritmo de \textit{ensemble} mais complexo, capaz de capturar relações não-lineares nos dados.
+
+A Regressão Linear foi implementada para ajustar o hiperplano que minimiza os erros quadrados residuais entre os valores previstos e os dados reais. Destaca-se por ser uma abordagem rápida, computacionalmente eficiente e cujos coeficientes aprendidos oferecem imediata interpretabilidade sobre a direção (positiva ou negativa) e a magnitude da influência de cada variável.
+
+O \textit{Random Forest Regressor}, em contraste, treina uma ``floresta'' com dezenas ou centenas de árvores de decisão individuais e estabelece a previsão baseada na média de suas estimativas. Para garantir que este algoritmo atingisse seu estado otimizado, foi implementada uma busca em grade rigorosa de hiperparâmetros (\texttt{GridSearchCV}) através da validação cruzada. O melhor modelo alcançado utilizou 500 estimadores (árvores), não possuía limitação explícita de profundidade máxima de nós (\texttt{max\_depth=None}) e exigia um mínimo de 4 amostras por folha para evitar sobreajuste acentuado (\textit{overfitting}).
+
+\section{Resultados Obtidos e Discussão}
+
+A avaliação dos modelos baseou-se na aplicação de métricas robustas calculadas sobre o conjunto de teste isolado previamente. As três métricas principais observadas foram o Coeficiente de Determinação ($R^{2}$), o Erro Absoluto Médio (MAE) e a Raiz do Erro Quadrático Médio (RMSE). A Tabela 1 expõe a avaliação comparativa direta dos modelos ajustados.
+
+\begin{table}[ht]
+\centering
+\caption{Desempenho Preditivo no Conjunto de Teste}
+\label{tab:desempenho}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Modelo} & \textbf{$R^2$} & \textbf{MAE} & \textbf{RMSE} \\
+\midrule
+Regressão Linear & 0.746 & 0.655 & 1.894 \\
+Random Forest (Otimizado) & 0.687 & 1.050 & 2.102 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+De forma contrária ao pressuposto inicial de que algoritmos mais complexos invariavelmente vencem, o modelo de Regressão Linear apresentou uma superioridade preditiva consistente. Exibindo um $R^{2}$ de cerca de 74.6\%, este modelo explicou melhor a variância da nota final do que o modelo em formato de árvore (68.7\%). Além disso, a predição linear sofreu de uma taxa consideravelmente menor no desvio absoluto do erro.
+
+A análise detalhada da distribuição dos resíduos revelou que os erros da regressão linear concentraram-se muito mais estritamente na faixa do zero (distribuição quase simétrica), enquanto o \textit{Random Forest} obteve uma dispersão mais larga em decorrência das dificuldades da árvore nas extremidades da distribuição das notas.
+
+A decomposição da importância das variáveis reforçou este entendimento empírico. Os altos coeficientes identificados pelo algoritmo linear ratificaram o fato de que a Frequência às aulas (\textit{Attendance}) e as Horas de Estudo Semanais (\textit{Hours\_Studied}) exercem um protagonismo fortíssimo, quase de caráter linear, sobre as variações das notas da prova. Componentes auxiliares como sessões de tutoria ou o desempenho prévio possuem efeito benéfico coadjuvante.
+
+Do ponto de vista metodológico, verificou-se no escopo do trabalho a perigosa presença do fenômeno de vazamento de dados (\textit{Data Leakage}). Durante testes com um pipeline global alimentado por todos os dados disponíveis combinados em vez do teste isolado, o coeficiente de determinação saltou bruscamente para 95\% de precisão. Este equívoco foi documentado como uma lição prática a respeito da preservação isolada do \textit{hold-out set} para análises autênticas.
+
+\section{Conclusões}
+
+Este trabalho cumpriu plenamente seu objetivo de descrever uma análise profunda dos dados educacionais. As conclusões centrais mostram que a performance estudantil obedece a determinantes causais relativamente diretos: assiduidade e volume temporal de estudos. Dessa maneira, algoritmos paramétricos simples exibem grande maturidade para apoiar educadores.
+
+Recomenda-se assim às direções e secretarias de escolas o incentivo de políticas ativas para melhoria de retenção e presença no dia a dia da sala de aula. Finalmente, as etapas de modelagem foram mantidas fiéis a rigorosos processos de escalabilidade de base e modularização que conferem à solução a confiabilidade desejada no contexto tecnológico contemporâneo.
+
+\begin{thebibliography}{99}
+
+\bibitem{abnt} ASSOCIAÇÃO BRASILEIRA DE NORMAS TÉCNICAS. \textbf{NBR 10520}: Informação e documentação - Citações em documentos - Apresentação. Rio de Janeiro: ABNT, 2023.
+
+\bibitem{hastie} HASTIE, T.; TIBSHIRANI, R.; FRIEDMAN, J. \textbf{The Elements of Statistical Learning}: Data Mining, Inference, and Prediction. 2. ed. New York: Springer, 2009.
+
+\bibitem{iso} ISO/IEC. \textbf{ISO/IEC 25010:2011}: Systems and software engineering - Systems and software Quality Requirements and Evaluation (SQuaRE) System and software quality models. Geneva: International Organization for Standardization, 2011.
+
+\bibitem{scikit} PEDREGOSA, F. et al. Scikit-learn: Machine Learning in Python. \textbf{Journal of Machine Learning Research}, v. 12, p. 2825-2830, 2011.
+
+\end{thebibliography}
+
+\end{document}
